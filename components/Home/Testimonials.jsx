@@ -90,7 +90,7 @@ function Testimonials() {
 
   return (
     // Regular <section> with static gradient background
-    <section className="w-full px-4 sm:px-6 lg:px-8 mx-auto bg-gradient-to-b from-white dark:from-black via-orange-400 dark:via-orange-400 to-red-600 dark:to-red-600 min-h-[400px] sm:min-h-[450px] md:min-h-[500px] py-8 sm:py-12 md:py-16">
+    <section className="w-full px-4 sm:px-6 lg:px-8 mx-auto bg-gradient-to-b from-orange-50 dark:from-black via-orange-400 dark:via-orange-400 to-red-600 dark:to-red-600 min-h-[400px] sm:min-h-[450px] md:min-h-[500px] py-8 sm:py-12 md:py-16">
       {/* Wrap all content in a motion.div so only the content is animated */}
       <motion.div
         className="mx-auto max-w-7xl"
@@ -100,7 +100,7 @@ function Testimonials() {
       >
         {/* Heading (animated item) */}
         <motion.h2
-          className="text-center border-b border-gray-400 pb-2 max-w-7xl mx-auto text-xl sm:text-2xl md:text-3xl lg:text-4xl capitalize"
+          className="text-orange-500 font-bold text-center pb-2 max-w-7xl mx-auto text-xl sm:text-2xl md:text-4xl lg:text-5xl capitalize"
           variants={itemVariants}
         >
           Testimonials
@@ -131,7 +131,7 @@ function Testimonials() {
               // Each testimonial can animate in if you'd like.
               <motion.div
                 key={index}
-                className="w-full flex-shrink-0 px-2 sm:px-4 text-gray-950"
+                className="w-full flex-shrink-0 px-2 sm:px-4 text-neutral-950"
                 variants={itemVariants}
               >
                 <div className="rounded-lg p-4 sm:p-6 md:p-8 transition-all duration-300">
@@ -139,7 +139,7 @@ function Testimonials() {
                     {[...Array(testimonial.stars)].map((_, i) => (
                       <Star
                         key={i}
-                        className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-orange-500 fill-current"
+                        className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-teal-500 fill-current"
                       />
                     ))}
                   </div>

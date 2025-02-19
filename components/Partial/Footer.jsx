@@ -13,6 +13,8 @@ import {
   FaInstagram,
   FaYoutube,
 } from "react-icons/fa";
+import { FiArrowRight } from "react-icons/fi";
+
 // 1) Import motion from framer-motion
 import { motion } from "framer-motion";
 
@@ -25,13 +27,13 @@ const Footer = () => {
   return (
     // 2) Replace <footer> with <motion.footer> to add animation
     <motion.footer
-      className="w-full shadow-lg px-3"
+      className="w-full  px-2"
       // 3) Simple fade/slide in on mount
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="container mx-auto px-2 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 items-center justify-center">
           {/* Left Section */}
           <div className="space-y-6">
@@ -97,41 +99,38 @@ const Footer = () => {
           </div>
 
           {/* Right Section - Newsletter */}
-          <div className="space-y-6 border border-gray-400/60 dark:border-neutral-700/60 rounded-3xl p-2 ">
-            <div className=" p-6 rounded-xl shadow-sm">
-              <h3 className=" font-bold text-2xl mb-4">
+          <div className="space-y-6 shadow-xl rounded-xl  p-2 h-full dark:bg-neutral-900 bg-orange-50">
+            <div className="p-6 rounded-xl  ">
+              <h3 className="font-bold text-2xl mb-4 text-neutral-800 dark:text-neutral-200">
                 Subscribe to Our Newsletter
               </h3>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <label htmlFor="name" className="block text-sm font-medium">
-                    Name
-                  </label>
                   <input
                     type="text"
                     id="name"
-                    className="w-full p-2 text-sm pl-3 border border-gray-400/60 dark:border-neutral-700/60 rounded-3xl focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 dark:bg-black"
+                    className="w-full p-2 text-sm pl-3 rounded-xl border-none focus:outline-none focus:ring-0 focus:border-none"
                     required
-                    placeholder="Enter your name"
+                    placeholder="Your name"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="email" className="block  text-sm font-medium">
-                    Email
-                  </label>
                   <input
                     type="email"
                     id="email"
-                    className="w-full p-2 text-sm pl-3 border border-gray-400/60 dark:border-neutral-700/60 rounded-3xl focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 dark:bg-black"
+                    className="w-full p-2 text-sm pl-3 rounded-xl border-none focus:outline-none focus:ring-0 focus:border-none"
                     required
-                    placeholder="Enter your email"
+                    placeholder="Your email"
                   />
                 </div>
                 <button
                   type="submit"
-                  className=" bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600  font-medium"
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl text-white p-2.5 text-sm font-bold w-full"
                 >
-                  Subscribe
+                  <span className="flex items-center justify-center">
+                    <span className="mr-2">Subscribe</span>
+                    <FiArrowRight className="w-5 h-5" />
+                  </span>
                 </button>
               </form>
             </div>
@@ -140,7 +139,7 @@ const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t ">
+      <div className="border-t border-orange-400 dark:border-orange-600 ">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-center text-sm ">
             Powered By:{" "}

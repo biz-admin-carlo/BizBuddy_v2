@@ -25,10 +25,10 @@ function TrustedPartners() {
   }, [controls]);
 
   return (
-    <div className="py-10 mx-auto px-4 w-full md:py-28">
-      <p className="text-center border-b border-gray-400 pb-2 max-w-7xl mx-auto text-xl sm:text-2xl md:text-3xl lg:text-4xl capitalize">
+    <div className="w-full px-4 md:px-0 md:h-[60vh] my-10 py-10 h-[30vh]">
+      <motion.h2 className="text-orange-500 font-bold text-center pb-2 max-w-7xl mx-auto text-xl sm:text-2xl md:text-4xl lg:text-5xl capitalize">
         Our Trusted Partners
-      </p>
+      </motion.h2>
       <div className="overflow-hidden mt-8 py-10">
         <motion.div
           initial={{ x: "0%" }}

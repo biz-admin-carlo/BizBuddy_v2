@@ -10,7 +10,7 @@ import { featureDetails } from "@/lib/data";
 function KeyFeatures() {
   const [activeFeature, setActiveFeature] = useState("schedule");
   const activeDetail = featureDetails.find((f) => f.id === activeFeature);
-  const images = ["/phone.png", "/tablet.png", "/tablet.png"];
+  const images = ["/phone.png", "/tablet.png", "/laptop.png"];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
@@ -52,7 +52,7 @@ function KeyFeatures() {
       variants={containerVariants}
     >
       <motion.div className="mb-8" variants={itemVariants}>
-        <h2 className="text-center border-b border-gray-400 pb-2 max-w-7xl mx-auto text-xl sm:text-2xl md:text-3xl lg:text-4xl capitalize ">
+        <h2 className="text-orange-500 font-bold text-center pb-2 max-w-7xl mx-auto text-xl sm:text-2xl md:text-4xl lg:text-5xl capitalize">
           Key Features
         </h2>
       </motion.div>
@@ -75,7 +75,7 @@ function KeyFeatures() {
             />
           </AnimatePresence>
         </motion.div>
-        <div className="w-full lg:w-3/5 flex flex-col items-start justify-center  ">
+        <div className="w-full lg:w-3/5 flex flex-col items-start justify-center shadow-2xl p-2 rounded-xl dark:shadow-neutral-900  ">
           <motion.div
             className="flex flex-wrap justify-center w-full gap-4 sm:gap-6 lg:gap-8 items-center p-2"
             variants={itemVariants}
@@ -86,10 +86,10 @@ function KeyFeatures() {
                 <motion.button
                   key={feature.id}
                   onClick={() => setActiveFeature(feature.id)}
-                  className={`flex justify-center gap-2 sm:gap-3 items-center px-4 sm:px-6 py-2 border rounded-full transition-colors duration-300 ${
+                  className={`flex justify-center gap-2 my-auto  rounded-xl sm:gap-3 border-none outline-none items-center px-4 sm:px-6 py-2  transition-colors duration-300 ${
                     activeFeature === feature.id
-                      ? "bg-orange-500 text-white hover:bg-orange-600"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      ? "bg-orange-500 text-white hover:bg-orange-500"
+                      : "  hover:bg-orange-500 hover:text-white "
                   }`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -105,7 +105,7 @@ function KeyFeatures() {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeFeature}
-              className="p-4 rounded-xl w-full mt-10"
+              className="p-4 rounded-xl w-full mt-10 "
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
@@ -116,7 +116,7 @@ function KeyFeatures() {
               </p>
               {activeDetail?.moreDetails && (
                 <motion.ul
-                  className="mt-4 space-y-2 text-left text-xs sm:text-sm lg:text-xl"
+                  className="mt-4 space-y-2 text-left text-xs sm:text-sm lg:text-xl "
                   variants={containerVariants}
                   initial="hidden"
                   animate="visible"

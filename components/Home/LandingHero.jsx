@@ -7,7 +7,7 @@ import Image from "next/image";
 
 export default function LandingHero() {
   return (
-    <section className=" md:py-12 py-7 mx-4 flex flex-col md:flex-row items-center justify-around max-w-7xl  bg-gradient-to-r from-orange-400 to-red-600 rounded-3xl overflow-hidden">
+    <section className=" md:py-12 py-7 mx-4 shadow-xl flex flex-col md:flex-row items-center justify-around max-w-7xl  bg-gradient-to-r from-orange-400 to-red-600 rounded-xl overflow-hidden">
       {/* Left Section: Text and Download Buttons */}
       <motion.div
         initial={{ opacity: 0, x: -50 }}

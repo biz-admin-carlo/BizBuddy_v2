@@ -34,7 +34,7 @@ export default function MobileMenu() {
         leaveFrom="opacity-100 scale-100"
         leaveTo="opacity-0 scale-95"
       >
-        <div className="absolute right-0 mt-2 w-40 origin-top-right bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10">
+        <div className="absolute right-0 mt-2 w-40 origin-top-right bg-white dark:bg-black border border-neutral-200 dark:border-neutral-700 rounded-md shadow-lg z-10">
           <div className="py-2">
             {/* Home Link */}
             <Link
@@ -44,9 +44,9 @@ export default function MobileMenu() {
                 ${
                   pathname === "/"
                     ? "text-orange-500 font-semibold"
-                    : "text-gray-700 dark:text-gray-200"
+                    : "text-neutral-700 dark:text-neutral-200"
                 }
-                hover:bg-gray-100 dark:hover:bg-gray-700
+                hover:bg-neutral-100 dark:hover:bg-neutral-700
               `}
             >
               Home
@@ -60,9 +60,9 @@ export default function MobileMenu() {
                 ${
                   pathname === "/pricing"
                     ? "text-orange-500 font-semibold"
-                    : "text-gray-700 dark:text-gray-200"
+                    : "text-neutral-700 dark:text-neutral-200"
                 }
-                hover:bg-gray-100 dark:hover:bg-gray-700
+                hover:bg-neutral-100 dark:hover:bg-neutral-700
               `}
             >
               Pricing
@@ -76,9 +76,9 @@ export default function MobileMenu() {
                 ${
                   pathname === "/faq"
                     ? "text-orange-500 font-semibold"
-                    : "text-gray-700 dark:text-gray-200"
+                    : "text-neutral-700 dark:text-neutral-200"
                 }
-                hover:bg-gray-100 dark:hover:bg-gray-700
+                hover:bg-neutral-100 dark:hover:bg-neutral-700
               `}
             >
               FAQ
@@ -92,9 +92,9 @@ export default function MobileMenu() {
                 ${
                   pathname === "/contact"
                     ? "text-orange-500 font-semibold"
-                    : "text-gray-700 dark:text-gray-200"
+                    : "text-neutral-700 dark:text-neutral-200"
                 }
-                hover:bg-gray-100 dark:hover:bg-gray-700
+                hover:bg-neutral-100 dark:hover:bg-neutral-700
               `}
             >
               Contact Us

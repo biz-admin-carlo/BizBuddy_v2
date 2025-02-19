@@ -25,7 +25,7 @@ const PricingCard = ({
       )}
       <h3 className="text-2xl font-bold text-orange-500">{title}</h3>
       <p className="text-xl font-bold mt-2">{price}</p>
-      <p className="text-sm text-gray-600 mt-2 mb-4">{description}</p>
+      <p className="text-sm text-neutral-600 mt-2 mb-4">{description}</p>
       <div className="flex-grow">
         <ul className="space-y-3">
           {features.map((feature, index) => (
@@ -35,7 +35,7 @@ const PricingCard = ({
               ) : (
                 <X className="w-5 h-5 text-red-500 mr-2" />
               )}
-              <span className="text-sm text-gray-600">Feature</span>
+              <span className="text-sm text-neutral-600">Feature</span>
             </li>
           ))}
         </ul>
@@ -133,7 +133,7 @@ export default function PricingPage() {
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">Choose Your Best Plan</h1>
-          <p className="text-gray-600 mb-4">
+          <p className="text-neutral-600 mb-4">
             All our plans work great for businesses of any size! Just pick the
             one that fits your needs best, and select the number of users to see
             the corresponding price.
@@ -156,7 +156,7 @@ export default function PricingPage() {
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-lg shadow-lg p-6 text-center">
             <h3 className="text-xl font-bold mb-2">Custom Plan</h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-neutral-600 mb-4">
               Need a plan tailored to your business? Contact us to customize
               user limits, features, and pricing to fit your needs.
             </p>

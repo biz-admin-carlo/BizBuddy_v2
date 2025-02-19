@@ -8,11 +8,13 @@ export const metadata = {
   description: "BizBuddy web application for time-keeping, payroll and leaves.",
 };
 
+const version = "2.0.0";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body className="bg-gray-50 text-gray-800 dark:bg-black dark:text-gray-300">
+      <body className="bg-orange-50 dark:bg-black text-neutral-700 dark:text-neutral-400">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <NavBar />
           <main className="pt-16 ">{children}</main>

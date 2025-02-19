@@ -26,7 +26,7 @@ export default function UserMenu() {
           ${
             isOpen
               ? "text-orange-500 border-orange-500 border-2"
-              : "border-2 border-gray-800 dark:border-gray-400"
+              : "border-2 border-neutral-800 dark:border-neutral-400"
           } 
           hover:text-orange-500 hover:border-orange-500
         `}
@@ -44,11 +44,11 @@ export default function UserMenu() {
       >
         <div className="absolute right-0 mt-2 w-56 origin-top-right bg-white dark:bg-black border rounded-md shadow-lg z-10">
           <div className="px-4 py-2 border-b ">
-            <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+            <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">
               {user.profile?.firstName || user.firstName}{" "}
               {user.profile?.lastName || user.lastName}
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
+            <p className="text-xs text-neutral-500 dark:text-neutral-400">
               {user.email}
             </p>
           </div>

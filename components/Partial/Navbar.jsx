@@ -42,7 +42,7 @@ function SignInLink() {
   return (
     <Link
       href="/sign-in"
-      className="px-5 text-gray-100 py-1 rounded-full  bg-orange-500 hover:bg-orange-600  transition-colors ease-in-out font-medium"
+      className="py-2.5 px-4 font-semibold text-white rounded-xl text-sm  bg-gradient-to-r from-orange-500 to-orange-600 hover:bg-orange-600  transition-colors ease-in-out "
     >
       Sign in
     </Link>
@@ -54,8 +54,8 @@ export default function NavBar() {
   const pathname = usePathname();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-gray-50 dark:bg-black border-b">
-      <div className="mx-auto max-w-7xl px-4">
+    <header className=" fixed top-0 left-0 right-0 z-50 bg-white dark:bg-neutral-900 px-6 rounded-full mt-2 max-w-7xl shadow-lg mx-4 md:mx-auto">
+      <div className="mx-auto max-w-7xl md:px-4 px-2">
         {/* ------------------ Desktop view (md+) ------------------ */}
         <div className="hidden md:flex items-center justify-between h-16">
           {/* Logo */}
@@ -63,7 +63,7 @@ export default function NavBar() {
             <img
               src="/logo.png"
               alt="Bizbuddy title and logo"
-              width={130}
+              width={110}
               height={40}
             />
           </Link>
@@ -83,7 +83,7 @@ export default function NavBar() {
         {/* ------------------ Mobile view (< md) ------------------ */}
         <div className="md:hidden">
           {/* Top row: Logo, ThemeToggle, MobileMenu, Sign in/UserMenu */}
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-16 ">
             <Link href="/">
               <img
                 src="/logo.png"
@@ -102,7 +102,7 @@ export default function NavBar() {
               {!user ? (
                 <Link
                   href="/sign-in"
-                  className="px-5 ml-3 text-gray-100 py-1 rounded-full border-2 bg-orange-500 hover:border-orange-600 transition-colors ease-in-out font-medium"
+                  className="py-2.5 px-4 font-semibold text-white rounded-xl text-sm  bg-gradient-to-r from-orange-500 to-orange-600 hover:bg-orange-600  transition-colors ease-in-out "
                 >
                   Sign in
                 </Link>

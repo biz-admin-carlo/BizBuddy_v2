@@ -68,7 +68,7 @@ export default function PaymentPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="max-w-md w-full p-8 rounded shadow bg-white dark:bg-[#1a1a1a] border border-gray-300 dark:border-gray-600">
+      <div className="max-w-md w-full p-8 rounded shadow bg-white dark:bg-[#1a1a1a] border border-neutral-300 dark:border-neutral-600">
         <h2 className="text-2xl font-bold mb-4">Payment Page</h2>
         <p className="mb-4">
           You are purchasing plan: <strong>{planId}</strong>

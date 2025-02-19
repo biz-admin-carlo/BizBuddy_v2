@@ -34,12 +34,12 @@ function SidebarUserInfo({ user }) {
 
   return (
     <div className="flex flex-col items-center mb-6">
-      <div className="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center text-2xl font-bold">
+      <div className="w-16 h-16 rounded-full bg-neutral-300 flex items-center justify-center text-2xl font-bold">
         {initials}
       </div>
       <div className="mt-2 text-center">
         <p className="font-semibold">{displayName}</p>
-        <p className="text-sm text-gray-500 capitalize">{user.role}</p>
+        <p className="text-sm text-neutral-500 capitalize">{user.role}</p>
       </div>
     </div>
   );
@@ -58,7 +58,7 @@ function MainNavigation({ activeNav, onNavChange }) {
               className={`block w-full text-left p-2 rounded ${
                 activeNav === item.id
                   ? "bg-primary text-primary-foreground"
-                  : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                  : "hover:bg-neutral-200 dark:hover:bg-neutral-700"
               }`}
             >
               {item.label}
@@ -95,7 +95,7 @@ function RoleBasedOptions({ role, onNavChange }) {
           <li key={item.id}>
             <button
               onClick={() => onNavChange(item.id)}
-              className="block w-full text-left p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+              className="block w-full text-left p-2 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700"
             >
               {item.label}
             </button>
@@ -222,7 +222,7 @@ export default function Dashboard() {
       <div className="flex-1 ml-0 md:ml-64">
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="absolute top-4 left-4 md:hidden z-40 p-2 bg-gray-100 rounded"
+          className="absolute top-4 left-4 md:hidden z-40 p-2 bg-neutral-100 rounded"
         >
           {isSidebarOpen ? (
             <X className="w-6 h-6" />

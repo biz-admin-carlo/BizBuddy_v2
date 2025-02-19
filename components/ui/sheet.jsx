@@ -18,7 +18,7 @@ const SheetContent = React.forwardRef(
         <SheetPrimitive.Content
           ref={ref}
           className={cn(
-            "fixed top-0 right-0 h-full bg-white dark:bg-gray-800 p-4 shadow-lg",
+            "fixed top-0 right-0 h-full bg-white dark:bg-neutral-800 p-4 shadow-lg",
             className
           )}
           {...props}

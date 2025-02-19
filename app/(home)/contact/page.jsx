@@ -8,7 +8,7 @@ import React from "react";
 
 function page() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col justify-between items-center ">
       <Contact className="" />
       <Footer />
     </div>

@@ -3,12 +3,15 @@
 "use client";
 
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { FiMessageSquare, FiSend } from "react-icons/fi";
+import { MdOutlineContactSupport } from "react-icons/md";
+import { FaPhone } from "react-icons/fa6";
+import { MdOutlineEmail } from "react-icons/md";
 
 // Example icons from react-icons (AiOutlinePhone, AiOutlineMail)
 import { AiOutlinePhone, AiOutlineMail } from "react-icons/ai";
@@ -40,32 +43,34 @@ function Contact() {
       variants={containerVariants}
     >
       <motion.h2
-        className="text-center border-b border-gray-400 pb-2 max-w-7xl mx-auto text-xl sm:text-2xl md:text-3xl lg:text-4xl capitalize"
+        className="text-orange-500 font-bold text-center pb-2 max-w-7xl mx-auto text-xl sm:text-2xl md:text-4xl lg:text-5xl capitalize"
         variants={itemVariants}
       >
-        Contact Us
+        Get in Touch
       </motion.h2>
+      <p></p>
       <div className="flex flex-col justify-center items-center w-full mt-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
           <motion.div variants={itemVariants} className="w-full">
-            <Card className="dark:bg-black border border-gray-400/60 dark:border-neutral-700/60 rounded-3xl p-2 h-full">
+            <Card className="rounded-xl p-2 border-none shadow-xl h-full bg-white dark:bg-neutral-800">
               <CardHeader>
-                <h3 className="text-xl sm:text-2xl font-bold">
+                <h3 className="flex items-center text-xl sm:text-2xl font-bold dark:text-neutral-200 text-neutral-800">
+                  <MdOutlineContactSupport className="mr-2 text-orange-500" />
                   Contact Details
                 </h3>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <AiOutlinePhone className="w-6 h-6" />
-                    <span className="text-sm sm:text-base">(123) 456-7890</span>
+                  <div className="flex items-center space-x-2 bg-orange-50 dark:bg-neutral-900 p-2 rounded-xl text-neutral-600 text-base dark:text-neutral-400 ">
+                    <FaPhone className="w-6 h-6 text-white bg-orange-500 p-1 rounded-xl" />
+                    <span className="text-xs sm:text-sm">(123) 456-7890</span>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <AiOutlineMail className="w-6 h-6" />
+                  <div className="flex items-center space-x-2 bg-orange-50 dark:bg-neutral-900 p-2 rounded-xl text-neutral-600 dark:text-neutral-400 text-base">
+                    <MdOutlineEmail className="w-6 h-6 text-white bg-orange-500 p-1 rounded-xl" />
                     <Link
                       href="#"
                       prefetch={false}
-                      className="text-sm sm:text-base hover:text-orange-500 transition-colors"
+                      className="text-xs sm:text-sm hover:text-orange-500 transition-colors"
                     >
                       info@example.com
                     </Link>
@@ -76,50 +81,45 @@ function Contact() {
           </motion.div>
 
           <motion.div variants={itemVariants} className="w-full">
-            <Card className="dark:bg-black border border-gray-400/60 dark:border-neutral-700/60 rounded-3xl p-2 h-full">
+            <Card className="rounded-xl p-2 border-none shadow-xl h-full bg-orange-50 dark:bg-neutral-900">
               <CardHeader>
-                <h3 className="text-xl sm:text-2xl font-bold">
-                  Leave a Message
+                <h3 className="flex items-center text-xl sm:text-2xl font-bold dark:text-neutral-200 text-neutral-800">
+                  <FiMessageSquare className="mr-2 text-orange-500" />
+                  Send Message
                 </h3>
               </CardHeader>
               <CardContent>
                 <form className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-sm sm:text-base">
-                      Name
-                    </Label>
                     <Input
                       id="name"
-                      placeholder="Enter your name"
-                      className="border border-gray-400/60 dark:border-neutral-700/60 rounded-3xl p-2 pl-3"
+                      placeholder="Your name"
+                      className="border-none p-2 pl-3 bg-white dark:bg-neutral-800"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-sm sm:text-base">
-                      Email
-                    </Label>
                     <Input
                       id="email"
-                      placeholder="Enter your email"
+                      placeholder="Your email"
                       type="email"
-                      className="border border-gray-400/60 dark:border-neutral-700/60 rounded-3xl p-2 pl-3"
+                      className="border-none p-2 pl-3 bg-white dark:bg-neutral-800"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="message" className="text-sm sm:text-base">
-                      Message
-                    </Label>
                     <Textarea
                       id="message"
-                      placeholder="Enter your message"
-                      className="min-h-[100px] border border-gray-400/60 dark:border-neutral-700/60 rounded-lg p-2 pl-3"
+                      placeholder="Your message"
+                      className="bg-white dark:bg-neutral-800"
                     />
                   </div>
 
-                  <Button className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 rounded-full transition-colors">
-                    Send message
+                  <Button className="py-3 px-4 w-full font-semibold text-white rounded-xl text-sm bg-gradient-to-r from-orange-500 to-orange-600">
+                    <span className="flex items-center justify-center">
+                      <span className="mr-2">Send Message</span>
+                      <FiSend />
+                    </span>
                   </Button>
                 </form>
               </CardContent>

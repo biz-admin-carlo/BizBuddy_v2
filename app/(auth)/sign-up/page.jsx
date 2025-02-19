@@ -127,9 +127,9 @@ export default function SignUpPage() {
                 onClick={togglePasswordVisibility}
               >
                 {passwordVisible ? (
-                  <EyeOff className="h-5 w-5 text-gray-500 relative top-3" />
+                  <EyeOff className="h-5 w-5 text-neutral-500 relative top-3" />
                 ) : (
-                  <Eye className="h-5 w-5 text-gray-500 relative top-3" />
+                  <Eye className="h-5 w-5 text-neutral-500 relative top-3" />
                 )}
               </div>
             </div>
@@ -148,9 +148,9 @@ export default function SignUpPage() {
                 onClick={toggleConfirmPasswordVisibility}
               >
                 {confirmPasswordVisible ? (
-                  <EyeOff className="h-5 w-5 text-gray-500 relative top-3" />
+                  <EyeOff className="h-5 w-5 text-neutral-500 relative top-3" />
                 ) : (
-                  <Eye className="h-5 w-5 text-gray-500 relative top-3" />
+                  <Eye className="h-5 w-5 text-neutral-500 relative top-3" />
                 )}
               </div>
             </div>

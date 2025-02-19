@@ -37,7 +37,7 @@ function FAQ() {
       variants={containerVariants}
     >
       <motion.h2
-        className="text-center border-b border-gray-400 pb-2 max-w-7xl mx-auto text-xl sm:text-2xl md:text-3xl lg:text-4xl capitalize"
+        className="text-orange-500 font-bold text-center pb-2 max-w-7xl mx-auto text-xl sm:text-2xl md:text-4xl lg:text-5xl capitalize"
         variants={itemVariants}
       >
         Frequently Asked Questions
