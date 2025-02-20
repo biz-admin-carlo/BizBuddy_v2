@@ -109,7 +109,7 @@ const Footer = () => {
                   <input
                     type="text"
                     id="name"
-                    className="w-full p-2 text-sm pl-3 rounded-xl border-none focus:outline-none focus:ring-0 focus:border-none"
+                    className="w-full  dark:bg-neutral-800 bg-white p-2 text-sm pl-3 rounded-xl border-none focus:outline-none focus:ring-0 focus:border-none"
                     required
                     placeholder="Your name"
                   />
@@ -118,7 +118,7 @@ const Footer = () => {
                   <input
                     type="email"
                     id="email"
-                    className="w-full p-2 text-sm pl-3 rounded-xl border-none focus:outline-none focus:ring-0 focus:border-none"
+                    className="w-full dark:bg-neutral-800 bg-white p-2 text-sm pl-3 rounded-xl border-none focus:outline-none focus:ring-0 focus:border-none"
                     required
                     placeholder="Your email"
                   />

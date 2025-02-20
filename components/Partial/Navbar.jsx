@@ -54,7 +54,7 @@ export default function NavBar() {
   const pathname = usePathname();
 
   return (
-    <header className=" fixed top-0 left-0 right-0 z-50 bg-white dark:bg-neutral-900 px-6 rounded-full mt-2 max-w-7xl shadow-lg mx-4 md:mx-auto">
+    <header className=" fixed top-0 left-0 right-0 z-50 bg-white dark:bg-neutral-900 px-4 md:px-6 md:rounded-full md:mt-1 md:max-w-7xl  shadow-lg md:mx-auto ">
       <div className="mx-auto max-w-7xl md:px-4 px-2">
         {/* ------------------ Desktop view (md+) ------------------ */}
         <div className="hidden md:flex items-center justify-between h-16">

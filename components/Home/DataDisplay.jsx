@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 function DataDisplay() {
   return (
-    <section className="relative w-full shadow-xl  overflow-hidden bg-gradient-to-b from-red-600 via-orange-400 to-neutral-200 rounded-b-3xl outline-none border-none">
+    <section className="relative w-full shadow-xl  overflow-hidden bg-gradient-to-b from-red-600 via-orange-400 to-neutral-200  outline-none border-none">
       {/* Main Content Container */}
       <motion.div
         initial={{ opacity: 0 }}

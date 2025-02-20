@@ -1,4 +1,5 @@
 // File: biz-web-app/app/layout.jsx
+
 import "./globals.css";
 import { ThemeProvider } from "@/components/Theme/ThemeProvider";
 import NavBar from "@/components/Partial/Navbar";

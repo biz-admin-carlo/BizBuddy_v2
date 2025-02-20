@@ -31,7 +31,7 @@ function FAQ() {
 
   return (
     <motion.section
-      className="py-10 mx-auto px-4 w-full max-w-7xl"
+      className="py-10 md:py-10 mx-auto px-4 w-full max-w-7xl"
       initial="hidden"
       animate="visible"
       variants={containerVariants}

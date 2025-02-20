@@ -119,12 +119,10 @@ export default function FeaturesIcon() {
     <div
       className={`
         relative w-full overflow-hidden perspective
-        
-        // Adjust the min-height & padding at different breakpoints
         min-h-[400px] sm:min-h-[500px] md:min-h-[600px]
-        pt-60 sm:pt-32 md:pt-72
+        pt-60 sm:pt-72 md:pt-96
         pb-16 sm:pb-24 md:pb-72
-        md:mt-20 px-4 mb-20  md:mb-0
+        md:mt-2  px-4 mb-20  md:mb-0
       `}
       onTouchStart={handleTouchStart}
       onTouchMove={handleDragMove}

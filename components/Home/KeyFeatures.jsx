@@ -52,7 +52,7 @@ function KeyFeatures() {
       variants={containerVariants}
     >
       <motion.div className="mb-8" variants={itemVariants}>
-        <h2 className="text-orange-500 font-bold text-center pb-2 max-w-7xl mx-auto text-xl sm:text-2xl md:text-4xl lg:text-5xl capitalize">
+        <h2 className="text-orange-500 mb-10 font-bold text-center pb-2 max-w-7xl mx-auto text-xl sm:text-2xl md:text-4xl lg:text-5xl capitalize">
           Key Features
         </h2>
       </motion.div>
@@ -75,9 +75,14 @@ function KeyFeatures() {
             />
           </AnimatePresence>
         </motion.div>
-        <div className="w-full lg:w-3/5 flex flex-col items-start justify-center shadow-2xl p-2 rounded-xl dark:shadow-neutral-900  ">
+        <div className="w-full lg:w-3/5 flex flex-col items-start justify-center lg:shadow-2xl  shadow-none p-2 md:rounded-xl dark:shadow-neutral-900  ">
           <motion.div
-            className="flex flex-wrap justify-center w-full gap-4 sm:gap-6 lg:gap-8 items-center p-2"
+            className="
+    w-full max-w-7xl mx-auto
+    px-4
+    flex flex-nowrap items-center justify-center
+    gap-2 sm:gap-4 md:gap-6
+    "
             variants={itemVariants}
           >
             {featureDetails.map((feature) => {
@@ -86,22 +91,32 @@ function KeyFeatures() {
                 <motion.button
                   key={feature.id}
                   onClick={() => setActiveFeature(feature.id)}
-                  className={`flex justify-center gap-2 my-auto  rounded-xl sm:gap-3 border-none outline-none items-center px-4 sm:px-6 py-2  transition-colors duration-300 ${
-                    activeFeature === feature.id
-                      ? "bg-orange-500 text-white hover:bg-orange-500"
-                      : "  hover:bg-orange-500 hover:text-white "
-                  }`}
+                  className={`
+          inline-flex items-center justify-center
+          gap-1 sm:gap-2
+          px-2 sm:px-3 md:px-4
+          py-1 sm:py-2
+          rounded-lg md:rounded-xl
+          text-xs sm:text-sm md:text-base lg:text-lg
+          shrink-0
+          border-none outline-none
+          transition-colors duration-300
+          ${
+            activeFeature === feature.id
+              ? "bg-orange-500 text-white hover:bg-orange-500"
+              : "hover:bg-orange-500 hover:text-white"
+          }
+        `}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Icon className="w-6 h-6 sm:w-8 sm:h-8 lg:w-9 lg:h-9" />
-                  <span className="text-sm sm:text-base lg:text-xl tracking-wide">
-                    {feature.name}
-                  </span>
+                  <Icon className="w-4 h-4 sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-8 lg:h-8" />
+                  <span className="leading-tight">{feature.name}</span>
                 </motion.button>
               );
             })}
           </motion.div>
+
           <AnimatePresence mode="wait">
             <motion.div
               key={activeFeature}
