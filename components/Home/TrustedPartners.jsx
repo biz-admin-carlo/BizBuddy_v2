@@ -28,7 +28,7 @@ function TrustedPartners() {
 
   return (
     <div
-      className="w-full px-4 md:px-0 my-10 py-10 md:py-24 
+      className="w-full md:px-0 my-10 py-10 md:py-24 
                     flex flex-col items-center"
     >
       <h2

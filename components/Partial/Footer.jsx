@@ -27,7 +27,7 @@ const Footer = () => {
   return (
     // 2) Replace <footer> with <motion.footer> to add animation
     <motion.footer
-      className="w-full  px-2"
+      className="w-full  px-2 mt-28"
       // 3) Simple fade/slide in on mount
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}

@@ -78,11 +78,11 @@ function KeyFeatures() {
         <div className="w-full lg:w-3/5 flex flex-col items-start justify-center lg:shadow-2xl  shadow-none p-2 md:rounded-xl dark:shadow-neutral-900  ">
           <motion.div
             className="
-    w-full max-w-7xl mx-auto
-    px-4
-    flex flex-nowrap items-center justify-center
-    gap-2 sm:gap-4 md:gap-6
-    "
+              w-full max-w-7xl mx-auto
+              px-4
+              flex flex-nowrap items-center justify-center
+              gap-2 sm:gap-4 md:gap-6
+              "
             variants={itemVariants}
           >
             {featureDetails.map((feature) => {
@@ -97,20 +97,20 @@ function KeyFeatures() {
           px-2 sm:px-3 md:px-4
           py-1 sm:py-2
           rounded-lg md:rounded-xl
-          text-xs sm:text-sm md:text-base lg:text-lg
+          text-xs sm:text-sm md:text-base lg:text-sm font-semibold
           shrink-0
           border-none outline-none
           transition-colors duration-300
           ${
             activeFeature === feature.id
-              ? "bg-orange-500 text-white hover:bg-orange-500"
-              : "hover:bg-orange-500 hover:text-white"
+              ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:bg-orange-500"
+              : "hover:bg-gradient-to-r from-orange-500 to-orange-600 hover:text-white"
           }
         `}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Icon className="w-4 h-4 sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-8 lg:h-8" />
+                  <Icon className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" />
                   <span className="leading-tight">{feature.name}</span>
                 </motion.button>
               );
