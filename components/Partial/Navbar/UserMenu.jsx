@@ -21,18 +21,19 @@ export default function UserMenu() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`
-          w-10 h-10 flex items-center justify-center text-sm font-semibold 
-          focus:outline-none border-2  rounded-full transition-colors
-          ${
-            isOpen
-              ? "text-orange-500 border-orange-500 border-2"
-              : "border-2 border-neutral-800 dark:border-neutral-400"
-          } 
-          hover:text-orange-500 hover:border-orange-500
-        `}
+    w-8 h-8 flex items-center justify-center text-sm font-semibold 
+    focus:outline-none border-2 p-1 rounded-full transition-colors
+    ${
+      isOpen
+        ? "text-orange-500 border-orange-500"
+        : "text-current border-neutral-800 dark:border-neutral-400"
+    }
+    hover:text-orange-500 hover:border-orange-500 dark:hover:border-orange-500
+  `}
       >
         {initials}
       </button>
+
       <Transition
         show={isOpen}
         enter="transition ease-out duration-100 transform"

@@ -57,7 +57,7 @@ function NotificationIcon() {
     <button className="relative p-2">
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="h-6 w-6 text-gray-600 dark:text-gray-300"
+        className="h-6 w-6 hover:text-orange-500"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -79,7 +79,7 @@ export default function NavBar() {
   const pathname = usePathname();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-neutral-900 px-4 md:px-6   shadow-lg ">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-neutral-900 px-4 md:px-6  py-1 shadow-lg ">
       <div className="mx-auto max-w-7xl md:px-4 px-2">
         {/* ------------------ Desktop view (md+) ------------------ */}
         <div className="hidden md:flex items-center justify-between h-14">
