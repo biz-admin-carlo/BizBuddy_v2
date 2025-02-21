@@ -34,15 +34,13 @@ function SidebarUserInfo({ user }) {
 
   return (
     <div className="flex flex-col items-center mb-6">
-      <div className="w-16 h-16 rounded-full bg-neutral-300 flex items-center justify-center text-2xl font-bold">
+      <div className="w-16 h-16 rounded-full bg-gradient-to-r capitalize from-orange-500 to-orange-600 flex items-center justify-center text-2xl  text-white mx-auto my-auto font-bold">
         {initials}
       </div>
       <div className="mt-2 text-center">
-        <p className="font-semibold">{displayName}</p>
-        <p className="text-sm text-neutral-500 capitalize">
-          {user.company.name}
-        </p>
-        <p className="text-sm text-neutral-500 capitalize">{user.role}</p>
+        <p className="font-semibold capitalize">{displayName}</p>
+        <p className=" text-neutral-500 capitalize mt-1">{user.company.name}</p>
+        <p className=" text-neutral-500 capitalize">{user.role}</p>
       </div>
     </div>
   );
@@ -52,15 +50,15 @@ function SidebarUserInfo({ user }) {
 function MainNavigation({ activeNav, onNavChange }) {
   return (
     <>
-      <h2 className="text-xl font-bold mb-4">Dashboard</h2>
+      <h2 className="text-xl font-bold mb-2">Dashboard</h2>
       <ul>
         {navItems.map((item) => (
           <li key={item.id}>
             <button
               onClick={() => onNavChange(item.id)}
-              className={`block w-full text-left p-2 rounded ${
+              className={`block w-full text-left p-2 my-1 rounded-xl ${
                 activeNav === item.id
-                  ? "bg-primary text-primary-foreground"
+                  ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold"
                   : "hover:bg-neutral-200 dark:hover:bg-neutral-700"
               }`}
             >
@@ -84,21 +82,20 @@ function RoleBasedOptions({ role, onNavChange }) {
       { id: "my-subscription", label: "My Subscription" },
       { id: "company-settings", label: "Company Settings" },
     ],
-    // Additional role mappings can be added here.
   };
 
   const items = roleBasedNavItems[role];
   if (!items) return null;
 
   return (
-    <div className="mt-6">
+    <div className="mt-10">
       <h3 className="text-lg font-semibold mb-2">Admin Options</h3>
       <ul>
         {items.map((item) => (
           <li key={item.id}>
             <button
               onClick={() => onNavChange(item.id)}
-              className="block w-full text-left p-2 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700"
+              className="block w-full text-left p-2 rounded-xl my-1 hover:bg-neutral-200 dark:hover:bg-neutral-700"
             >
               {item.label}
             </button>
@@ -144,7 +141,7 @@ function CompanySubscription({ companyId }) {
     return <p>No active subscription found for your company.</p>;
 
   return (
-    <div className="mt-8 p-4 border rounded">
+    <div className="mt-8 p-4 border rounded-xl">
       <h3 className="text-xl font-bold mb-2">Current Subscription</h3>
       <p>
         <strong>Plan:</strong> {subscription.plan?.name}
@@ -169,7 +166,7 @@ function CompanySubscription({ companyId }) {
 // Main Sidebar component composing all modular parts.
 function Sidebar({ activeNav, onNavChange, user }) {
   return (
-    <aside className="w-64 bg-white dark:bg-black border-r p-4 h-full">
+    <aside className="w-56  border-r p-4 h-full">
       <SidebarUserInfo user={user} />
       <MainNavigation activeNav={activeNav} onNavChange={onNavChange} />
       <RoleBasedOptions role={user.role} onNavChange={onNavChange} />
@@ -180,7 +177,7 @@ function Sidebar({ activeNav, onNavChange, user }) {
 // Component to display the main dashboard content.
 function DashboardContent({ activeNav, companyId }) {
   return (
-    <main className="p-8">
+    <main className="py-10">
       <h1 className="text-3xl font-bold mb-4">Welcome to your Dashboard</h1>
       <p>Selected Section: {activeNav}</p>
       {/* Render the current subscription for the company */}
@@ -222,10 +219,10 @@ export default function Dashboard() {
       >
         <Sidebar activeNav={activeNav} onNavChange={setActiveNav} user={user} />
       </div>
-      <div className="flex-1 ml-0 md:ml-64">
+      <div className="flex-1 ml-0 md:ml-32">
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="absolute top-4 left-4 md:hidden z-40 p-2 bg-neutral-100 rounded"
+          className="absolute top-4 left-4 md:hidden z-40 p-2 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full"
         >
           {isSidebarOpen ? (
             <X className="w-6 h-6" />
@@ -233,7 +230,9 @@ export default function Dashboard() {
             <Menu className="w-6 h-6" />
           )}
         </button>
-        <DashboardContent activeNav={activeNav} companyId={companyId} />
+        <div className="px-4 md:pr-20">
+          <DashboardContent activeNav={activeNav} companyId={companyId} />
+        </div>
       </div>
     </div>
   );

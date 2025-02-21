@@ -33,7 +33,6 @@ export default function UserMenu() {
       >
         {initials}
       </button>
-
       <Transition
         show={isOpen}
         enter="transition ease-out duration-100 transform"
