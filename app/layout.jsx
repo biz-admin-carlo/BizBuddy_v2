@@ -6,8 +6,7 @@ import NavBar from "@/components/Partial/Navbar";
 
 export const metadata = {
   title: "BizBuddy",
-  description:
-    "BizBuddy web application for time-keeping, payroll and leaves. ",
+  description: "BizBuddy web application for time-keeping, payroll and leaves.",
 };
 
 const version = "2.0.0";
