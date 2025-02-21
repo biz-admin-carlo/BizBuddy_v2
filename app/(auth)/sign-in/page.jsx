@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import useAuthStore from "@/store/useAuthStore";
 import Footer from "@/components/Partial/Footer";
+import { motion } from "framer-motion";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -43,7 +44,6 @@ export default function SignInPage() {
         setLoading(false);
         return;
       }
-      console.log("SignInPage: Received users:", data.users);
       setUsers(data.users);
       setStep(2);
     } catch (err) {
@@ -56,9 +56,7 @@ export default function SignInPage() {
   const handleCompanySelect = (companyId) => {
     setLoading(true);
     setLoadingCompanyId(companyId);
-
     const selectedUser = users.find((u) => u.companyId === companyId);
-    console.log("SignInPage: selected user:", selectedUser);
     if (selectedUser) {
       login(selectedUser);
     }
@@ -70,97 +68,117 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="h-screen w-full flex flex-col justify-between items-center ">
-      <div className=" flex  p-4 max-w-7xl mx-auto">
-        <div className="w-full p-8 rounded-3xl shadow border-t border-l border-r  mx-auto max-w-3xl text-sm tracking-wider">
-          <h2 className="text-lg font-bold mb-6 text-center">Sign In</h2>
-          {step === 1 && (
-            <form onSubmit={handleNext} className="space-y-4">
-              <div>
-                <label className="block mb-1">Email:</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full p-2 rounded border bg-transparent"
-                  required
-                />
+    <motion.div
+      className="min-h-screen flex flex-col"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <motion.h2
+          className="text-orange-500 font-bold mb-8 text-center pb-2 max-w-7xl mx-auto text-xl sm:text-2xl md:text-4xl lg:text-5xl capitalize"
+          initial={{ y: -50 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          Sign In
+        </motion.h2>
+        {step === 1 && (
+          <motion.form
+            onSubmit={handleNext}
+            className="space-y-6 max-w-md mx-auto bg-orange-50 border-none outline-none dark:bg-neutral-900 p-8 rounded-3xl shadow-xl"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">User Details</h2>
+              <input
+                type="email"
+                name="email"
+                placeholder="Your email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full p-2 rounded-xl text-sm dark:bg-neutral-800 bg-white outline-none bg-transparent"
+                required
+              />
+            </div>
+            <div>
+              <input
+                type="password"
+                name="password"
+                placeholder="Your password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full p-2 rounded-xl text-sm dark:bg-neutral-800 bg-white outline-none bg-transparent"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full px-4 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:bg-orange-700 transition-colors flex items-center justify-center ${
+                loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
+            >
+              Next{" "}
+              {loading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
+            </button>
+            {error && (
+              <div className="text-center text-red-500 text-sm">{error}</div>
+            )}
+            <div className="text-center mt-6">
+              <p className="text-xs">Don't have an account?</p>
+              <button
+                onClick={() => router.push("/sign-up")}
+                className="mt-1 underline text-orange-500 hover:text-orange-700"
+              >
+                Create one here
+              </button>
+            </div>
+          </motion.form>
+        )}
+        {step === 2 && (
+          <motion.div
+            className="max-w-md mx-auto bg-orange-50 dark:bg-neutral-800 p-8 rounded-3xl shadow-xl space-y-6"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            {error && (
+              <div className="mb-4 p-2 text-white bg-red-500 rounded-xl">
+                {error}
               </div>
-              <div>
-                <label className="block mb-1">Password:</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="w-full p-2 rounded border bg-transparent"
-                  required
-                />
-              </div>
-              <div className="h-[8vh] pt-6">
+            )}
+            <p className="text-center font-semibold  text-lg md:text-2xl ">
+              Select a company to continue:
+            </p>
+            {users.map((u) => {
+              const compName = u.company?.name || "No Name";
+              const isLoading = loadingCompanyId === u.companyId;
+              return (
                 <button
-                  type="submit"
+                  key={u.companyId}
+                  onClick={() => handleCompanySelect(u.companyId)}
                   disabled={loading}
-                  className={`w-full px-4 py-2 rounded bg-orange-600 text-white hover:bg-orange-700 transition-colors flex items-center justify-center ${
+                  className={`w-full px-4 py-2 rounded-xl text-sm font-semibold capitalize bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:bg-orange-700 transition-colors flex items-center justify-between ${
                     loading ? "opacity-70 cursor-not-allowed" : ""
                   }`}
                 >
-                  Next
-                  {loading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
+                  <span>{compName}</span>
+                  {isLoading && (
+                    <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                  )}
+                  <span>
+                    {u.username} ({u.role})
+                  </span>
                 </button>
-                {error && (
-                  <div className="mb-4 text-sm text-center py-2 text-red-500 rounded">
-                    {error}
-                  </div>
-                )}
-              </div>
-              <div className=" mt-10 text-right">
-                <p className="text-xs">Don't have an account?</p>
-                <button
-                  onClick={() => router.push("/sign-up")}
-                  className="mt-1 underline text-orange-500 hover:text-orange-700"
-                >
-                  Create one here
-                </button>
-              </div>
-            </form>
-          )}
-          {step === 2 && (
-            <div className="space-y-4">
-              {error && (
-                <div className="mb-4 p-2 text-white bg-red-500 border border-red-500 rounded">
-                  {error}
-                </div>
-              )}
-              <p className="mb-2 text-center">Select a company to continue:</p>
-              {users.map((u) => {
-                const compName = u.company?.name || "No Name";
-                const isLoading = loadingCompanyId === u.companyId;
-                return (
-                  <button
-                    key={u.companyId}
-                    onClick={() => handleCompanySelect(u.companyId)}
-                    disabled={loading}
-                    className={`w-full px-4 py-2 rounded bg-orange-600 text-white hover:bg-orange-700 transition-colors flex items-center justify-between ${
-                      loading ? "opacity-70 cursor-not-allowed" : ""
-                    }`}
-                  >
-                    <span>{compName}</span>
-                    {isLoading && (
-                      <Loader2 className="ml-2 h-4 w-4 animate-spin" />
-                    )}
-                    <span>
-                      {u.username}({u.role})
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
+              );
+            })}
+          </motion.div>
+        )}
       </div>
       <Footer />
-    </div>
+    </motion.div>
   );
 }

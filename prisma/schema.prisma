@@ -71,7 +71,7 @@ model UserProfile {
 
 model Company {
   id        String   @id @default(cuid())
-  name      String
+  name      String   @unique
   userId    String   @unique
   createdAt DateTime @default(now()) @db.Timestamptz
   updatedAt DateTime @default(now()) @db.Timestamptz
@@ -79,7 +79,6 @@ model Company {
   Department   Department[]
   User         User[]
   Tax          Tax[]
-  Payment      Payment[]
   Location     Location[]
   Shift        Shift[]
   Subscription Subscription[]
@@ -144,13 +143,12 @@ model Payroll {
 
 model Payment {
   id          String   @id @default(cuid())
-  companyId   String
+  companyName String
+  email       String
   amount      Decimal  @db.Decimal(10, 2)
   paymentDate DateTime @default(now()) @db.Timestamptz
   createdAt   DateTime @default(now()) @db.Timestamptz
   updatedAt   DateTime @default(now()) @db.Timestamptz
-
-  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 }
 
 model TimeLog {

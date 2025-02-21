@@ -1,3 +1,5 @@
+// biz-web-app/components/Partial/Navbar.jsx
+
 "use client";
 
 import Link from "next/link";

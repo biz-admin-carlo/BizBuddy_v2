@@ -1,3 +1,5 @@
+// File: biz-web-app/app/(home)/pricing/page.jsx
+
 "use client";
 
 import { useState, useEffect } from "react";

@@ -2,189 +2,382 @@
 
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Footer from "@/components/Partial/Footer";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function SignUpPage() {
-  const searchParams = useSearchParams();
   const router = useRouter();
-  const planFromQuery = searchParams.get("plan") || "free-1";
 
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+  // Step state: 1 = User Details, 2 = Company Details, 3 = Selected Plan/Payment
+  const [step, setStep] = useState(1);
+
+  // Step 1: User Details – persisted in localStorage
+  const [userForm, setUserForm] = useState({
     username: "",
     email: "",
-    phone: "",
     password: "",
-    confirmPassword: "",
-    plan: planFromQuery,
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
   });
-  const [error, setError] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+
+  // Step 2: Company Details – persisted in localStorage
+  const [companyForm, setCompanyForm] = useState({
+    name: "",
+  });
+  const [companyError, setCompanyError] = useState("");
+
+  // Step 3: Selected Plan (retrieved from localStorage)
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  // Payment status (determined securely and stored locally)
+  const [paymentStatus, setPaymentStatus] = useState("unpaid");
+
   const [loading, setLoading] = useState(false);
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  // On mount, retrieve stored data (and paymentStatus from localStorage)
+  useEffect(() => {
+    const storedPlan = localStorage.getItem("selectedPlan");
+    if (storedPlan) setSelectedPlan(JSON.parse(storedPlan));
+    const storedUser = localStorage.getItem("userForm");
+    if (storedUser) setUserForm(JSON.parse(storedUser));
+    const storedCompany = localStorage.getItem("companyForm");
+    if (storedCompany) setCompanyForm(JSON.parse(storedCompany));
+    const storedPaymentStatus = localStorage.getItem("paymentStatus");
+    if (storedPaymentStatus === "paid") {
+      setPaymentStatus("paid");
+      setStep(3);
+    }
+  }, []);
+
+  const handleUserChange = (e) => {
+    const updated = { ...userForm, [e.target.name]: e.target.value };
+    setUserForm(updated);
+    localStorage.setItem("userForm", JSON.stringify(updated));
+    if (e.target.name === "email") {
+      localStorage.setItem("userEmail", e.target.value);
+    }
   };
 
-  const togglePasswordVisibility = () => {
-    setPasswordVisible((prev) => !prev);
+  const handleCompanyChange = (e) => {
+    const updated = { ...companyForm, [e.target.name]: e.target.value };
+    setCompanyForm(updated);
+    localStorage.setItem("companyForm", JSON.stringify(updated));
+    if (e.target.name === "name") {
+      localStorage.setItem("companyName", e.target.value);
+    }
   };
 
-  const toggleConfirmPasswordVisibility = () => {
-    setConfirmPasswordVisible((prev) => !prev);
+  // Check if username is already used
+  const checkUsernameAvailability = async () => {
+    if (!userForm.username.trim()) return;
+    try {
+      const res = await fetch(
+        `/api/auth/check-username?username=${encodeURIComponent(
+          userForm.username
+        )}`
+      );
+      const data = await res.json();
+      if (!data.available) {
+        setUsernameError("Username is already taken.");
+      } else {
+        setUsernameError("");
+      }
+    } catch (err) {
+      setUsernameError("Error checking username.");
+    }
+  };
+
+  // Check if company name is already used
+  const checkCompanyAvailability = async () => {
+    if (!companyForm.name.trim()) return;
+    try {
+      const res = await fetch(
+        `/api/auth/check-company?name=${encodeURIComponent(companyForm.name)}`
+      );
+      const data = await res.json();
+      if (!data.available) {
+        setCompanyError("Company name is already in use.");
+      } else {
+        setCompanyError("");
+      }
+    } catch (err) {
+      setCompanyError("Error checking company name.");
+    }
+  };
+
+  const validateStep1 = () =>
+    userForm.username.trim() !== "" &&
+    userForm.email.trim() !== "" &&
+    userForm.password.trim() !== "" &&
+    usernameError === "";
+
+  const validateStep2 = () =>
+    companyForm.name.trim() !== "" && companyError === "";
+
+  const handleNext = () => {
+    if (step === 1 && validateStep1()) {
+      setStep(2);
+    } else if (step === 2 && validateStep2()) {
+      setStep(3);
+    }
+  };
+
+  const handleBack = () => setStep((prev) => prev - 1);
+
+  const handlePayment = () => {
+    router.push("/payment");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
     setLoading(true);
-    localStorage.setItem("userRegistrationData", JSON.stringify(formData));
-    router.push(`/company-details?plan=${encodeURIComponent(formData.plan)}`);
-    setLoading(false);
+    setError("");
+    try {
+      const payload = {
+        username: userForm.username,
+        email: userForm.email,
+        password: userForm.password,
+        firstName: userForm.firstName,
+        lastName: userForm.lastName,
+        phone: userForm.phoneNumber,
+        companyName: companyForm.name,
+        plan: selectedPlan ? selectedPlan.id : null,
+      };
+
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Signup failed");
+      }
+      // Clear stored data on success and redirect to dashboard
+      localStorage.removeItem("userForm");
+      localStorage.removeItem("companyForm");
+      localStorage.removeItem("paymentStatus");
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="h-screen w-full flex flex-col justify-between items-center ">
-      <div className="min-h-[80vh] flex  p-4 max-w-7xl mx-auto">
-        <div className="w-full p-8 rounded-3xl shadow border-t border-l border-r  mx-auto max-w-3xl text-sm tracking-wider">
-          <h2 className="text-lg font-bold mb-6 text-center">Sign Up</h2>
-          <form onSubmit={handleSubmit} className="space-y-2">
-            <div>
-              <label className="block mb-1 ">First Name:</label>
-              <input
-                type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                className="w-full p-2 rounded border bg-transparent "
-                required
-              />
-            </div>
-            <div>
-              <label className="block mb-1">Last Name:</label>
-              <input
-                type="text"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                className="w-full p-2 rounded border bg-transparent "
-                required
-              />
-            </div>
-            <div>
-              <label className="block mb-1 ">Username (unique):</label>
-              <input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                className="w-full p-2 rounded border bg-transparent "
-                required
-              />
-            </div>
-            <div>
-              <label className="block mb-1">Email:</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full p-2 rounded border bg-transparent "
-                required
-              />
-            </div>
-            <div>
-              <label className="block mb-1 ">Phone Number (optional):</label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className="w-full p-2 rounded border bg-transparent "
-              />
-            </div>
-            <div className="relative ">
-              <label className="block mb-1 ">Password:</label>
-              <input
-                type={passwordVisible ? "text" : "password"}
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full p-2 rounded border bg-transparent pr-10 "
-                required
-              />
-              <div
-                className="absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer "
-                onClick={togglePasswordVisibility}
+    <motion.div
+      className="min-h-screen flex flex-col justify-between"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <motion.h2
+          className="text-orange-500 font-bold mb-8 text-center pb-2 max-w-7xl mx-auto text-xl sm:text-2xl md:text-4xl lg:text-5xl capitalize"
+          initial={{ y: -50 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          Sign Up
+        </motion.h2>
+        <motion.form
+          onSubmit={handleSubmit}
+          className="space-y-8 max-w-md mx-auto bg-orange-50 dark:bg-neutral-900 p-8 rounded-3xl shadow-xl"
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <AnimatePresence mode="wait">
+            {step === 1 && (
+              <motion.div
+                key="step1"
+                initial={{ x: 300, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: -300, opacity: 0 }}
+                transition={{ duration: 0.3 }}
               >
-                {passwordVisible ? (
-                  <EyeOff className="h-5 w-5 text-neutral-500 relative top-3" />
-                ) : (
-                  <Eye className="h-5 w-5 text-neutral-500 relative top-3" />
-                )}
-              </div>
-            </div>
-            <div className="relative">
-              <label className="block mb-1 ">Confirm Password:</label>
-              <input
-                type={confirmPasswordVisible ? "text" : "password"}
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="w-full p-2 rounded border bg-transparent pr-10"
-                required
-              />
-              <div
-                className="absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer"
-                onClick={toggleConfirmPasswordVisibility}
+                <h2 className="text-2xl font-semibold mb-4 ">User Details</h2>
+                <div className="grid grid-cols-1 gap-4 text-sm">
+                  <input
+                    type="text"
+                    name="username"
+                    placeholder="Username"
+                    value={userForm.username}
+                    onChange={handleUserChange}
+                    onBlur={checkUsernameAvailability}
+                    className="w-full p-2  rounded-xl bg-white dark:bg-neutral-800 outline-none "
+                    required
+                  />
+                  {usernameError && (
+                    <p className="text-red-500 text-sm">{usernameError}</p>
+                  )}
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    value={userForm.email}
+                    onChange={handleUserChange}
+                    className="w-full p-2  rounded-xl bg-white dark:bg-neutral-800 outline-none "
+                    required
+                  />
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    value={userForm.password}
+                    onChange={handleUserChange}
+                    className="w-full p-2  rounded-xl bg-white dark:bg-neutral-800 outline-none "
+                    required
+                  />
+                  <input
+                    type="text"
+                    name="firstName"
+                    placeholder="First Name"
+                    value={userForm.firstName}
+                    onChange={handleUserChange}
+                    className="w-full p-2  rounded-xl bg-white dark:bg-neutral-800 outline-none "
+                  />
+                  <input
+                    type="text"
+                    name="lastName"
+                    placeholder="Last Name"
+                    value={userForm.lastName}
+                    onChange={handleUserChange}
+                    className="w-full p-2  rounded-xl bg-white dark:bg-neutral-800 outline-none "
+                  />
+                  <input
+                    type="text"
+                    name="phoneNumber"
+                    placeholder="Phone Number"
+                    value={userForm.phoneNumber}
+                    onChange={handleUserChange}
+                    className="w-full p-2  rounded-xl bg-white dark:bg-neutral-800 outline-none "
+                  />
+                </div>
+              </motion.div>
+            )}
+
+            {step === 2 && (
+              <motion.div
+                key="step2"
+                initial={{ x: 300, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: -300, opacity: 0 }}
+                transition={{ duration: 0.3 }}
               >
-                {confirmPasswordVisible ? (
-                  <EyeOff className="h-5 w-5 text-neutral-500 relative top-3" />
+                <h2 className="text-2xl font-semibold mb-4">Company Details</h2>
+                <div className="grid grid-cols-1 gap-4 text-sm">
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Company Name"
+                    value={companyForm.name}
+                    onChange={handleCompanyChange}
+                    onBlur={checkCompanyAvailability}
+                    className="w-full p-2 border rounded-xl border-none outline-none  bg-white dark:bg-neutral-800"
+                    required
+                  />
+                  {companyError && (
+                    <p className="text-red-500 text-sm">{companyError}</p>
+                  )}
+                </div>
+              </motion.div>
+            )}
+
+            {step === 3 && (
+              <motion.div
+                key="step3"
+                initial={{ x: 300, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: -300, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <h2 className="text-2xl font-semibold mb-4">Selected Plan</h2>
+                {selectedPlan ? (
+                  <div className="border-none outline-none p-5 rounded-xl bg-white dark:bg-neutral-800">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-bold">
+                        {selectedPlan.name} Plan
+                      </span>
+                      <span className="text-xl">${selectedPlan.price}</span>
+                    </div>
+                    <div className="mb-2">
+                      <p>{selectedPlan.rangeOfUsers} users</p>
+                      <p className="text-sm text-neutral-600 dark:text-neutral-300">
+                        {selectedPlan.description}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between  mt-10 dark:bg-neutral-900 p-4 rounded-xl bg-orange-50">
+                      <span
+                        className={`  p-2.5 rounded-xl text-base underline tracking-widest font-bold ${
+                          paymentStatus === "paid"
+                            ? "text-teal-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {paymentStatus === "paid" ? "Paid" : "Unpaid"}
+                      </span>
+                      {paymentStatus === "unpaid" && (
+                        <button
+                          type="button"
+                          onClick={handlePayment}
+                          className=" bg-gradient-to-r from-orange-500 to-orange-600 text-white p-2.5 rounded-xl text-sm font-semibold"
+                        >
+                          Proceed to Payment
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 ) : (
-                  <Eye className="h-5 w-5 text-neutral-500 relative top-3" />
+                  <p className="text-neutral-600">No plan selected.</p>
                 )}
-              </div>
-            </div>
-            <div>
-              <label className="block mb-1 ">Selected Plan:</label>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {error && <p className="text-red-500 text-center">{error}</p>}
+
+          <div className="flex justify-between">
+            {step > 1 && (
               <button
                 type="button"
-                onClick={() => router.push("/pricing")}
-                className="w-full p-2 rounded border  border-orange-600 hover:bg-orange-700"
+                onClick={handleBack}
+                className="border-none outline-none bg-neutral-200 dark:bg-neutral-800 px-4 py-2 rounded-xl font-semibold text-sm"
               >
-                {formData.plan}
+                Back
               </button>
-            </div>
-            <div className="h-[9vh] py-6">
+            )}
+            {step < 3 && (
               <button
-                type="submit"
-                disabled={loading}
-                className={`w-full bg-orange-600 hover:bg-700 text-white tracking-wider p-2 rounded flex items-center justify-center ${
-                  loading ? "opacity-70 cursor-not-allowed" : ""
-                }`}
+                type="button"
+                onClick={handleNext}
+                disabled={
+                  (step === 1 && !validateStep1()) ||
+                  (step === 2 && !validateStep2())
+                }
+                className="ml-auto bg-gradient-to-r from-orange-500 font-semibold text-sm to-orange-600 text-white px-4 py-2 rounded-xl outline-none border-none disabled:opacity-50"
               >
                 Next
-                {loading && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
               </button>
-              {error && (
-                <div className="mb-4 text-sm text-center py-2 text-red-500 rounded">
-                  {error}
-                </div>
-              )}
-            </div>
-          </form>
-        </div>
+            )}
+            {step === 3 && (
+              <button
+                type="submit"
+                disabled={loading || paymentStatus !== "paid"}
+                className="ml-auto bg-gradient-to-r from-orange-500 font-semibold text-sm to-orange-600 text-white px-4 py-2 rounded-xl outline-none border-none disabled:opacity-50"
+              >
+                {loading ? "Submitting..." : "Submit"}
+              </button>
+            )}
+          </div>
+        </motion.form>
       </div>
       <Footer />
-    </div>
+    </motion.div>
   );
 }

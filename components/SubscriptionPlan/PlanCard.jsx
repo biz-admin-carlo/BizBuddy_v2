@@ -1,6 +1,9 @@
+// biz-web-app/components/SubscriptionPlan/PriceCard.jsx
+
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -15,6 +18,7 @@ const featureLabels = {
 export default function PlanCard({ plan }) {
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
@@ -36,6 +40,13 @@ export default function PlanCard({ plan }) {
   };
 
   const selectedOption = plan.options[selectedOptionIndex];
+
+  const handleChoosePlan = () => {
+    // Save the full selected plan option to localStorage
+    localStorage.setItem("selectedPlan", JSON.stringify(selectedOption));
+    // Redirect to sign-up page with the selected plan's id as a query parameter
+    router.push(`/sign-up?planId=${selectedOption.id}`);
+  };
 
   return (
     <motion.div
@@ -136,6 +147,7 @@ export default function PlanCard({ plan }) {
       </div>
 
       <motion.button
+        onClick={handleChoosePlan}
         className="mt-6 w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold py-2 px-4 rounded-xl transition-all ease-in-out duration-200"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
