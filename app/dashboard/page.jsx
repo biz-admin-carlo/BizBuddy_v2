@@ -39,6 +39,9 @@ function SidebarUserInfo({ user }) {
       </div>
       <div className="mt-2 text-center">
         <p className="font-semibold">{displayName}</p>
+        <p className="text-sm text-neutral-500 capitalize">
+          {user.company.name}
+        </p>
         <p className="text-sm text-neutral-500 capitalize">{user.role}</p>
       </div>
     </div>

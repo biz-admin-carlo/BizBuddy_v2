@@ -28,9 +28,9 @@ function DesktopNavLinks({ pathname }) {
         <Link
           key={link.href}
           href={link.href}
-          className={`px-1 py-1 transition-colors hover:text-orange-500
-            ${pathname === link.href ? "text-orange-500" : ""}
-          `}
+          className={`px-1 py-1 transition-colors hover:text-orange-500 ${
+            pathname === link.href ? "text-orange-500" : ""
+          }`}
         >
           {link.label}
         </Link>
@@ -44,10 +44,33 @@ function SignInLink() {
   return (
     <Link
       href="/sign-in"
-      className="py-2.5 px-4 font-semibold text-white rounded-xl text-sm  bg-gradient-to-r from-orange-500 to-orange-600 hover:bg-orange-600  transition-colors ease-in-out "
+      className="py-2.5 px-4 font-semibold text-white rounded-xl text-sm bg-gradient-to-r from-orange-500 to-orange-600 hover:bg-orange-600 transition-colors ease-in-out"
     >
       Sign in
     </Link>
+  );
+}
+
+/** Notification Icon component for logged in users */
+function NotificationIcon() {
+  return (
+    <button className="relative p-2">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-6 w-6 text-gray-600 dark:text-gray-300"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-5-5.917V4a2 2 0 10-4 0v1.083A6 6 0 004 11v3.159c0 .538-.214 1.055-.595 1.436L2 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+        />
+      </svg>
+      <span className="absolute top-0 right-0 block h-2 w-2 rounded-full ring-2 ring-white bg-red-500"></span>
+    </button>
   );
 }
 
@@ -56,7 +79,7 @@ export default function NavBar() {
   const pathname = usePathname();
 
   return (
-    <header className=" fixed top-0 left-0 right-0 z-50 bg-white dark:bg-neutral-900 px-4 md:px-6 lg:rounded-full lg:mt-1 md:max-w-7xl  shadow-lg md:mx-auto ">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-neutral-900 px-4 md:px-6   shadow-lg ">
       <div className="mx-auto max-w-7xl md:px-4 px-2">
         {/* ------------------ Desktop view (md+) ------------------ */}
         <div className="hidden md:flex items-center justify-between h-14">
@@ -70,12 +93,16 @@ export default function NavBar() {
             />
           </Link>
 
-          {/* Right side: Theme toggle, main links, and sign in/user menu */}
+          {/* Right side: Theme toggle, navigation/notification, and sign in/user menu */}
           <div className="flex items-center space-x-4">
             <ThemeToggle />
 
-            {/* Always show main nav links, whether user is signed in or not */}
-            <DesktopNavLinks pathname={pathname} />
+            {/* If user is logged in, show the NotificationIcon; otherwise show nav links */}
+            {!user ? (
+              <DesktopNavLinks pathname={pathname} />
+            ) : (
+              <NotificationIcon />
+            )}
 
             {/* Conditionally show Sign in or UserMenu */}
             {!user ? <SignInLink /> : <UserMenu />}
@@ -84,8 +111,8 @@ export default function NavBar() {
 
         {/* ------------------ Mobile view (< md) ------------------ */}
         <div className="md:hidden">
-          {/* Top row: Logo, ThemeToggle, MobileMenu, Sign in/UserMenu */}
-          <div className="flex items-center justify-between h-14 ">
+          {/* Top row: Logo, ThemeToggle, navigation/notification, and sign in/UserMenu */}
+          <div className="flex items-center justify-between h-14">
             <Link href="/">
               <img
                 src="/logo.png"
@@ -97,14 +124,14 @@ export default function NavBar() {
 
             <div className="flex items-center">
               <ThemeToggle />
-              {/* MobileMenu with 4 main links in a dropdown */}
-              <MobileMenu />
+              {/* If user is logged in, show the NotificationIcon; otherwise show MobileMenu */}
+              {!user ? <MobileMenu /> : <NotificationIcon />}
 
               {/* Conditionally show Sign in or UserMenu */}
               {!user ? (
                 <Link
                   href="/sign-in"
-                  className="py-2 px-4 font-semibold text-white rounded-xl text-sm  bg-gradient-to-r from-orange-500 to-orange-600 hover:bg-orange-600  transition-colors ease-in-out "
+                  className="py-2 px-4 font-semibold text-white rounded-xl text-sm bg-gradient-to-r from-orange-500 to-orange-600 hover:bg-orange-600 transition-colors ease-in-out"
                 >
                   Sign in
                 </Link>
