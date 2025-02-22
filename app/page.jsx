@@ -1,6 +1,10 @@
 // File: biz-web-app/app/page.jsx
 
 "use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import useAuthStore from "@/store/useAuthStore";
 import LandingHero from "@/components/Home/LandingHero";
 import FeaturesIcon from "@/components/Home/FeaturesIcon";
 import KeyFeatures from "@/components/Home/KeyFeatures";
@@ -12,6 +16,15 @@ import Accordion from "@/components/Home/Accordion";
 import Footer from "@/components/Partial/Footer";
 
 export default function Home() {
+  const { user } = useAuthStore();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.replace("/dashboard");
+    }
+  }, [user, router]);
+
   return (
     <div className="flex flex-col justify-center items-center w-full md:pt-16 lg:pt-18 pt-10">
       <LandingHero />
