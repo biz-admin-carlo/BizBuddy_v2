@@ -23,16 +23,30 @@ export async function GET(request) {
     // Extract the username from the token payload since username is the unique identifier.
     const { username } = payload;
 
-    // Query the database for the full user data, including the profile, using the username.
+    // Query the database for the full user data, including the profile and company.
     const user = await prisma.user.findUnique({
       where: { username },
-      include: { profile: true },
+      include: {
+        profile: true,
+        company: true, // Include the company relation
+      },
     });
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-    return NextResponse.json({ user });
+
+    // Extract companyId and companyName from the user object
+    const { companyId, company } = user;
+    const companyName = company ? company.name : null;
+
+    return NextResponse.json({
+      user: {
+        ...user,
+        companyId,
+        companyName,
+      },
+    });
   } catch (err) {
     console.error("Profile route error:", err);
     return NextResponse.json(

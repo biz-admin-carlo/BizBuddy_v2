@@ -37,7 +37,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-[auto,1fr]">
-      {/* <Sidebar activeNav={activeNav} onNavChange={setActiveNav} user={user} /> */}
+      <Sidebar activeNav={activeNav} onNavChange={setActiveNav} user={user} />
       <DashboardContent activeNav={activeNav} companyId={user.company?.id} />
     </div>
   );

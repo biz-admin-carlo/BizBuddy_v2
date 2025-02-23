@@ -1,5 +1,4 @@
 // File: biz-web-app/components/Dashboard/DashboardContent/SideBar.jsx
-// File: biz-web-app/components/Dashboard/DashboardContent/SideBar.jsx
 "use client";
 import { useState, useEffect } from "react";
 import {
@@ -171,7 +170,7 @@ function getSettingsWithLock(items, subscriptionPlan, role) {
       return updated.filter(
         (group) => group.id === "departments" || group.id === "preference"
       );
-    case "employee": // Also handle singular "employee"
+    case "employee":
     case "employees":
       return updated.filter((group) => group.id === "preference");
     default:
@@ -179,28 +178,27 @@ function getSettingsWithLock(items, subscriptionPlan, role) {
   }
 }
 
-// ── SIDEBAR USER INFO ──
-function SidebarUserInfo({ user, subscriptionPlan }) {
-  const getInitials = () => {
-    const firstInitial = user.profile?.firstName
-      ? user.profile.firstName.charAt(0)
-      : user.username?.charAt(0) || "";
-    const lastInitial = user.profile?.lastName
-      ? user.profile.lastName.charAt(0)
-      : "";
-    return (firstInitial + lastInitial).toUpperCase();
-  };
-
-  const initials = getInitials();
+// ── SIDEBAR USER INFO (FETCHED LIKE IN USERMENU) ──
+function SidebarUserInfo({ profile, subscriptionPlan }) {
+  // Replicating UserMenu setup: using profile.profile for first/last names
+  const firstInitial = profile.profile?.firstName
+    ? profile.profile.firstName.charAt(0)
+    : "";
+  const lastInitial = profile.profile?.lastName
+    ? profile.profile.lastName.charAt(0)
+    : "";
+  const initials = (firstInitial + lastInitial).toUpperCase() || "?";
   const displayName =
-    user.profile?.firstName || user.profile?.lastName
-      ? `${user.profile.firstName || ""} ${user.profile.lastName || ""}`.trim()
-      : user.username;
+    profile.profile?.firstName || profile.profile?.lastName
+      ? `${profile.profile?.firstName || ""} ${
+          profile.profile?.lastName || ""
+        }`.trim()
+      : profile.username;
 
   return (
     <div className="flex flex-col items-center mb-2 border-b p-2">
       <div className="flex justify-between items-center w-full">
-        <div className="w-10 h-10 rounded-full border-2 flex items-center justify-center text-lg  font-bold">
+        <div className="w-10 h-10 rounded-full border-2 flex items-center justify-center text-lg font-bold">
           {initials}
         </div>
         <div className="flex flex-col text-lg">
@@ -212,14 +210,14 @@ function SidebarUserInfo({ user, subscriptionPlan }) {
           {subscriptionPlan}
         </p>
         <p className="text-neutral-600 font-semibold capitalize mt-1">
-          {user.company.name}
+          {profile.company?.name}
         </p>
       </div>
       <div className="mt-2 text-center w-full text-sm">
-        <div className="flex justify-between items-start  flex-col">
-          <p className="text-neutral-500 mt-1 font-semibold">{user.email}</p>
+        <div className="flex justify-between items-start flex-col">
+          <p className="text-neutral-500 mt-1 font-semibold">{profile.email}</p>
           <p className="text-neutral-500 capitalize mt-1 font-semibold">
-            {user.role}
+            {profile.role}
           </p>
         </div>
       </div>
@@ -234,7 +232,7 @@ function CollapsibleNavItem({ item, activeNav, onNavChange }) {
     <li>
       <button
         onClick={() => setExpanded(!expanded)}
-        className="block w-full text-left p-2 my-1 rounded-xl font-semibold hover:bg-neutral-200 dark:hover:bg-neutral-700 flex justify-between items-center"
+        className="w-full text-left p-2 my-1 rounded-xl font-semibold hover:bg-neutral-200 dark:hover:bg-neutral-700 flex justify-between items-center"
       >
         <span>{item.label}</span>
         <span>
@@ -313,7 +311,7 @@ function CollapsibleSettingsItem({ item, activeNav, onNavChange }) {
     <li>
       <button
         onClick={() => setExpanded(!expanded)}
-        className="block w-full text-left p-2 my-1 rounded-xl font-semibold hover:bg-neutral-200 dark:hover:bg-neutral-700 flex justify-between items-center"
+        className="w-full text-left p-2 my-1 rounded-xl font-semibold hover:bg-neutral-200 dark:hover:bg-neutral-700 flex justify-between items-center"
       >
         <span>{item.label}</span>
         <span>
@@ -393,42 +391,66 @@ function CollapsibleSection({ title, children, defaultExpanded = true }) {
   );
 }
 
-// ── SIDEBAR COMPONENT ──
-export default function Sidebar({ activeNav, onNavChange, user }) {
+// ── SIDEBAR COMPONENT (WITH PROFILE FETCH) ──
+export default function Sidebar({ activeNav, onNavChange }) {
+  const { token } = useAuthStore();
+  const [profile, setProfile] = useState(null);
+  const [subscription, setSubscription] = useState(null);
   const [collapsed, setCollapsed] = useState(false);
-  const { subscription, setSubscription } = useAuthStore();
 
-  // Always fetch the current subscription on mount
+  // Fetch the user profile just like in UserMenu
+  useEffect(() => {
+    if (token) {
+      fetch("/api/user/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.user) setProfile(data.user);
+        })
+        .catch((err) => console.error("Failed to fetch user profile:", err));
+    }
+  }, [token]);
+
+  // Once profile is available, fetch the subscription details
   useEffect(() => {
     async function fetchSubscription() {
-      try {
-        const res = await fetch(
-          `/api/subscription/current?companyId=${user.company.id}`
-        );
-        const data = await res.json();
-        if (
-          data.subscription &&
-          data.subscription.plan &&
-          data.subscription.plan.name
-        ) {
-          setSubscription(data.subscription);
-        } else {
+      if (profile && profile.company && profile.company.id) {
+        try {
+          const res = await fetch(
+            `/api/subscription/current?companyId=${profile.company.id}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          const data = await res.json();
+          if (
+            res.ok &&
+            data.subscription &&
+            data.subscription.plan &&
+            data.subscription.plan.name
+          ) {
+            setSubscription(data.subscription);
+          } else {
+            setSubscription(null);
+          }
+        } catch (error) {
+          console.error("Error fetching subscription:", error);
           setSubscription(null);
         }
-      } catch (error) {
-        console.error("Error fetching subscription:", error);
-        setSubscription(null);
       }
     }
-    if (user?.company?.id) {
+    if (profile && token) {
       fetchSubscription();
     }
-  }, [user, setSubscription]);
+  }, [profile, token]);
+
+  if (!profile) return null;
 
   // Derive the current subscription plan (default to "free")
   const subscriptionPlan = subscription?.plan?.name?.toLowerCase() || "free";
 
-  // Process the original nav items to add a "locked" property and required plan.
+  // Process navigation items with the current subscription plan
   const featuresItems = getFeaturesWithLock(
     originalFeaturesItems,
     subscriptionPlan
@@ -436,7 +458,7 @@ export default function Sidebar({ activeNav, onNavChange, user }) {
   const settingsItemsFiltered = getSettingsWithLock(
     originalSettingsItems,
     subscriptionPlan,
-    user.role
+    profile.role
   );
 
   return (
@@ -448,7 +470,10 @@ export default function Sidebar({ activeNav, onNavChange, user }) {
         } w-full`}
       >
         <div className="p-4">
-          <SidebarUserInfo user={user} subscriptionPlan={subscriptionPlan} />
+          <SidebarUserInfo
+            profile={profile}
+            subscriptionPlan={subscriptionPlan}
+          />
           <CollapsibleSection title="Dashboard">
             <MainNavigation
               items={featuresItems}
@@ -456,7 +481,7 @@ export default function Sidebar({ activeNav, onNavChange, user }) {
               onNavChange={onNavChange}
             />
           </CollapsibleSection>
-          <CollapsibleSection title={`Settings (${user.role})`}>
+          <CollapsibleSection title={`Settings (${profile.role})`}>
             <SettingsMenu
               items={settingsItemsFiltered}
               activeNav={activeNav}
@@ -472,7 +497,6 @@ export default function Sidebar({ activeNav, onNavChange, user }) {
           className="p-2"
           title={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
-          {/* Desktop toggle: left/right arrows */}
           <span className="hidden md:block">
             {collapsed ? (
               <ArrowRight strokeWidth={2} className="w-6 h-6 text-orange-500" />
@@ -480,7 +504,6 @@ export default function Sidebar({ activeNav, onNavChange, user }) {
               <ArrowLeft strokeWidth={2} className="w-6 h-6 text-orange-500" />
             )}
           </span>
-          {/* Mobile toggle: up/down arrows */}
           <span className="block md:hidden">
             {collapsed ? (
               <ArrowDown strokeWidth={2} className="w-6 h-6 text-orange-500" />
