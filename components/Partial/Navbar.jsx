@@ -1,7 +1,5 @@
-// biz-web-app/components/Partial/Navbar.jsx
-
+// File: biz-web-app/components/Partial/Navbar.jsx
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "../Theme/ThemeToggle";
@@ -9,7 +7,6 @@ import useAuthStore from "@/store/useAuthStore";
 import UserMenu from "./Navbar/UserMenu";
 import MobileMenu from "./Navbar/MobileMenu";
 
-/** Simple array of main nav links to avoid repetition. */
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/pricing", label: "Pricing" },
@@ -17,10 +14,6 @@ const navLinks = [
   { href: "/contact", label: "Contact Us" },
 ];
 
-/**
- * Desktop-only nav links for Home, Pricing, FAQ, Contact.
- * Highlights active link in orange if pathname matches.
- */
 function DesktopNavLinks({ pathname }) {
   return (
     <>
@@ -39,7 +32,6 @@ function DesktopNavLinks({ pathname }) {
   );
 }
 
-/** Sign-in button used in desktop view when user is NOT signed in. */
 function SignInLink() {
   return (
     <Link
@@ -51,7 +43,6 @@ function SignInLink() {
   );
 }
 
-/** Notification Icon component for logged in users */
 function NotificationIcon() {
   return (
     <button className="relative p-2">
@@ -75,15 +66,12 @@ function NotificationIcon() {
 }
 
 export default function NavBar() {
-  const { user } = useAuthStore();
+  const { token } = useAuthStore();
   const pathname = usePathname();
-
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-t from-white dark:from-neutral-800 to-orange-50 dark:to-black px-4 md:px-6  py-1 shadow-lg ">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-t from-white dark:from-neutral-800 to-orange-50 dark:to-black px-4 md:px-6 py-1 shadow-lg">
       <div className="mx-auto max-w-7xl md:px-4 px-2">
-        {/* ------------------ Desktop view (md+) ------------------ */}
         <div className="hidden md:flex items-center justify-between h-14">
-          {/* Logo */}
           <Link href="/">
             <img
               src="/logo.png"
@@ -92,26 +80,17 @@ export default function NavBar() {
               height={40}
             />
           </Link>
-
-          {/* Right side: Theme toggle, navigation/notification, and sign in/user menu */}
           <div className="flex items-center space-x-4">
             <ThemeToggle />
-
-            {/* If user is logged in, show the NotificationIcon; otherwise show nav links */}
-            {!user ? (
+            {!token ? (
               <DesktopNavLinks pathname={pathname} />
             ) : (
               <NotificationIcon />
             )}
-
-            {/* Conditionally show Sign in or UserMenu */}
-            {!user ? <SignInLink /> : <UserMenu />}
+            {!token ? <SignInLink /> : <UserMenu />}
           </div>
         </div>
-
-        {/* ------------------ Mobile view (< md) ------------------ */}
         <div className="md:hidden">
-          {/* Top row: Logo, ThemeToggle, navigation/notification, and sign in/UserMenu */}
           <div className="flex items-center justify-between h-14">
             <Link href="/">
               <img
@@ -121,14 +100,10 @@ export default function NavBar() {
                 height={25}
               />
             </Link>
-
             <div className="flex items-center">
               <ThemeToggle />
-              {/* If user is logged in, show the NotificationIcon; otherwise show MobileMenu */}
-              {!user ? <MobileMenu /> : <NotificationIcon />}
-
-              {/* Conditionally show Sign in or UserMenu */}
-              {!user ? (
+              {!token ? <MobileMenu /> : <NotificationIcon />}
+              {!token ? (
                 <Link
                   href="/sign-in"
                   className="py-2 px-4 font-semibold text-white rounded-xl text-sm bg-gradient-to-r from-orange-500 to-orange-600 hover:bg-orange-600 transition-colors ease-in-out"

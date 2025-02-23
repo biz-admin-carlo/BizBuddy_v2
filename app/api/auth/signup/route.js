@@ -1,5 +1,4 @@
 // File: biz-web-app/app/api/auth/signup/route.js
-
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
@@ -10,11 +9,11 @@ export async function POST(request) {
       username,
       email,
       password,
-      plan,       
+      plan,
       firstName,
       lastName,
       phone,
-      companyName,   
+      companyName,
     } = await request.json();
 
     // Hash the password before storing
@@ -31,7 +30,7 @@ export async function POST(request) {
           email,
         },
       });
-      
+
       // 2. Create the User record (initially without a companyId)
       const user = await tx.user.create({
         data: {
@@ -42,7 +41,7 @@ export async function POST(request) {
           companyId: null,
         },
       });
-      
+
       // 3. Create a Company record using the companyName from the form and link it to the user.
       const company = await tx.company.create({
         data: {
@@ -50,23 +49,21 @@ export async function POST(request) {
           userId: user.id,
         },
       });
-      
+
       // 4. Update the User record with the newly created company's id.
       const updatedUser = await tx.user.update({
         where: { id: user.id },
         data: { companyId: company.id },
       });
-      
+
       // 5. Retrieve the chosen subscription plan from the database.
       const subscriptionPlan = await tx.subscriptionPlan.findFirst({
         where: { id: plan },
       });
-      console.log("plan: ", plan);
-      console.log("test4.5");
       if (!subscriptionPlan) {
         throw new Error("Subscription plan not found");
       }
-      
+
       // 6. Create a Subscription record linking the user, company, and chosen plan.
       const subscription = await tx.subscription.create({
         data: {
@@ -75,7 +72,7 @@ export async function POST(request) {
           planId: subscriptionPlan.id,
         },
       });
-      
+
       // 7. Create a Payment record using companyName and email.
       const payment = await tx.payment.create({
         data: {
@@ -84,14 +81,25 @@ export async function POST(request) {
           amount: subscriptionPlan.price,
         },
       });
-      console.log("test7");
-      
+
       return { user: updatedUser, company, subscription, payment, userProfile };
     });
 
     return NextResponse.json({ success: true, data: result });
   } catch (err) {
     console.error("Registration error:", err.message);
+    // Check for Prisma's unique constraint error (P2002) on the company name field.
+    if (
+      err.code === "P2002" &&
+      err.meta &&
+      err.meta.target &&
+      err.meta.target.includes("name")
+    ) {
+      return NextResponse.json(
+        { error: "Company name is already in use" },
+        { status: 400 }
+      );
+    }
     return NextResponse.json({ error: "Registration failed" }, { status: 500 });
   }
 }

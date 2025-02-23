@@ -1,5 +1,4 @@
-// biz-web-app/app/api/stripe/create-payment-intent/route.js
-
+// File: biz-web-app/app/api/stripe/create-payment-intent/route.js
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
@@ -24,6 +23,11 @@ export async function POST(request) {
     }
 
     const amountInCents = Math.round(parseFloat(plan.price) * 100);
+
+    // If plan price is 0, skip payment creation.
+    if (amountInCents === 0) {
+      return NextResponse.json({ freePlan: true });
+    }
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountInCents,

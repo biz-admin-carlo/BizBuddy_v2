@@ -1,6 +1,5 @@
 // File: biz-web-app/app/(auth)/payment/page.jsx
 "use client";
-
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
@@ -13,7 +12,6 @@ import {
 import Footer from "@/components/Partial/Footer";
 import { motion } from "framer-motion";
 
-// Load your publishable key from env variables
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
@@ -21,17 +19,15 @@ const stripePromise = loadStripe(
 function CheckoutForm({ planId, onPaymentSuccess, email, companyName }) {
   const stripe = useStripe();
   const elements = useElements();
-  const [clientSecret, setClientSecret] = useState(null);
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const [clientSecret, setClientSecret] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!stripe || !elements) return;
     setProcessing(true);
     setError(null);
-
-    // Create a PaymentIntent by calling our API
     const res = await fetch("/api/stripe/create-payment-intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -43,9 +39,13 @@ function CheckoutForm({ planId, onPaymentSuccess, email, companyName }) {
       setProcessing(false);
       return;
     }
+    if (data.freePlan) {
+      localStorage.setItem("paymentStatus", "paid");
+      onPaymentSuccess();
+      setProcessing(false);
+      return;
+    }
     setClientSecret(data.clientSecret);
-
-    // Confirm the card payment
     const result = await stripe.confirmCardPayment(data.clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement),
@@ -56,7 +56,6 @@ function CheckoutForm({ planId, onPaymentSuccess, email, companyName }) {
       setError(result.error.message);
       setProcessing(false);
     } else if (result.paymentIntent.status === "succeeded") {
-      // Securely update payment status (stored locally for UI update)
       localStorage.setItem("paymentStatus", "paid");
       onPaymentSuccess();
       setProcessing(false);
@@ -66,27 +65,22 @@ function CheckoutForm({ planId, onPaymentSuccess, email, companyName }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 pt-10 pb-2 gap-1  flex-col flex"
+      className="space-y-4 pt-10 pb-2 gap-1 flex-col flex"
     >
       <CardElement
         options={{
           hidePostalCode: true,
           style: {
             base: {
-              color: "#ffffff", // text color for typed values in dark mode (adjust if needed)
+              color: "#ffffff",
               fontSize: "14px",
-              "::placeholder": {
-                color: "#cccccc", // placeholder text color
-              },
+              "::placeholder": { color: "#cccccc" },
             },
-            invalid: {
-              color: "#fa755a",
-            },
+            invalid: { color: "#fa755a" },
           },
         }}
-        className="p-3 rounded-xl dark:bg-neutral-800 bg-white "
+        className="p-3 rounded-xl dark:bg-neutral-800 bg-white"
       />
-
       <button
         type="submit"
         disabled={!stripe || processing}
@@ -94,9 +88,7 @@ function CheckoutForm({ planId, onPaymentSuccess, email, companyName }) {
       >
         {processing ? "Processing..." : "Pay Now"}
       </button>
-      {error && (
-        <div className=" text-center text-red-500 text-sm">{error}</div>
-      )}
+      {error && <div className="text-center text-red-500 text-sm">{error}</div>}
     </form>
   );
 }
@@ -104,7 +96,6 @@ function CheckoutForm({ planId, onPaymentSuccess, email, companyName }) {
 export default function PaymentPage() {
   const router = useRouter();
   const [plan, setPlan] = useState(null);
-  // Retrieve email and companyName from stored sign-up data
   const [email, setEmail] = useState("");
   const [companyName, setCompanyName] = useState("");
 

@@ -1,7 +1,5 @@
 // File: biz-web-app/app/(auth)/sign-up/page.jsx
-
 "use client";
-
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Footer from "@/components/Partial/Footer";
@@ -9,11 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function SignUpPage() {
   const router = useRouter();
-
-  // Step state: 1 = User Details, 2 = Company Details, 3 = Selected Plan/Payment
   const [step, setStep] = useState(1);
-
-  // Step 1: User Details – persisted in localStorage
   const [userForm, setUserForm] = useState({
     username: "",
     email: "",
@@ -23,22 +17,13 @@ export default function SignUpPage() {
     phoneNumber: "",
   });
   const [usernameError, setUsernameError] = useState("");
-
-  // Step 2: Company Details – persisted in localStorage
-  const [companyForm, setCompanyForm] = useState({
-    name: "",
-  });
+  const [companyForm, setCompanyForm] = useState({ name: "" });
   const [companyError, setCompanyError] = useState("");
-
-  // Step 3: Selected Plan (retrieved from localStorage)
   const [selectedPlan, setSelectedPlan] = useState(null);
-  // Payment status (determined securely and stored locally)
   const [paymentStatus, setPaymentStatus] = useState("unpaid");
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // On mount, retrieve stored data (and paymentStatus from localStorage)
   useEffect(() => {
     const storedPlan = localStorage.getItem("selectedPlan");
     if (storedPlan) setSelectedPlan(JSON.parse(storedPlan));
@@ -57,21 +42,18 @@ export default function SignUpPage() {
     const updated = { ...userForm, [e.target.name]: e.target.value };
     setUserForm(updated);
     localStorage.setItem("userForm", JSON.stringify(updated));
-    if (e.target.name === "email") {
+    if (e.target.name === "email")
       localStorage.setItem("userEmail", e.target.value);
-    }
   };
 
   const handleCompanyChange = (e) => {
     const updated = { ...companyForm, [e.target.name]: e.target.value };
     setCompanyForm(updated);
     localStorage.setItem("companyForm", JSON.stringify(updated));
-    if (e.target.name === "name") {
+    if (e.target.name === "name")
       localStorage.setItem("companyName", e.target.value);
-    }
   };
 
-  // Check if username is already used
   const checkUsernameAvailability = async () => {
     if (!userForm.username.trim()) return;
     try {
@@ -81,17 +63,12 @@ export default function SignUpPage() {
         )}`
       );
       const data = await res.json();
-      if (!data.available) {
-        setUsernameError("Username is already taken.");
-      } else {
-        setUsernameError("");
-      }
+      setUsernameError(data.available ? "" : "Username is already taken.");
     } catch (err) {
       setUsernameError("Error checking username.");
     }
   };
 
-  // Check if company name is already used
   const checkCompanyAvailability = async () => {
     if (!companyForm.name.trim()) return;
     try {
@@ -99,11 +76,7 @@ export default function SignUpPage() {
         `/api/auth/check-company?name=${encodeURIComponent(companyForm.name)}`
       );
       const data = await res.json();
-      if (!data.available) {
-        setCompanyError("Company name is already in use.");
-      } else {
-        setCompanyError("");
-      }
+      setCompanyError(data.available ? "" : "Company name is already in use.");
     } catch (err) {
       setCompanyError("Error checking company name.");
     }
@@ -114,20 +87,15 @@ export default function SignUpPage() {
     userForm.email.trim() !== "" &&
     userForm.password.trim() !== "" &&
     usernameError === "";
-
   const validateStep2 = () =>
     companyForm.name.trim() !== "" && companyError === "";
 
   const handleNext = () => {
-    if (step === 1 && validateStep1()) {
-      setStep(2);
-    } else if (step === 2 && validateStep2()) {
-      setStep(3);
-    }
+    if (step === 1 && validateStep1()) setStep(2);
+    else if (step === 2 && validateStep2()) setStep(3);
   };
 
   const handleBack = () => setStep((prev) => prev - 1);
-
   const handlePayment = () => {
     router.push("/payment");
   };
@@ -147,17 +115,13 @@ export default function SignUpPage() {
         companyName: companyForm.name,
         plan: selectedPlan ? selectedPlan.id : null,
       };
-
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
       const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Signup failed");
-      }
-      // Clear stored data on success and redirect to dashboard
+      if (!res.ok) throw new Error(data.error || "Signup failed");
       localStorage.removeItem("userForm");
       localStorage.removeItem("companyForm");
       localStorage.removeItem("paymentStatus");
@@ -201,7 +165,7 @@ export default function SignUpPage() {
                 exit={{ x: -300, opacity: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <h2 className="text-2xl font-semibold mb-4 ">User Details</h2>
+                <h2 className="text-2xl font-semibold mb-4">User Details</h2>
                 <div className="grid grid-cols-1 gap-4 text-sm">
                   <input
                     type="text"
@@ -210,7 +174,7 @@ export default function SignUpPage() {
                     value={userForm.username}
                     onChange={handleUserChange}
                     onBlur={checkUsernameAvailability}
-                    className="w-full p-2  rounded-xl bg-white dark:bg-neutral-800 outline-none "
+                    className="w-full p-2 rounded-xl bg-white dark:bg-neutral-800 outline-none"
                     required
                   />
                   {usernameError && (
@@ -222,7 +186,7 @@ export default function SignUpPage() {
                     placeholder="Email"
                     value={userForm.email}
                     onChange={handleUserChange}
-                    className="w-full p-2  rounded-xl bg-white dark:bg-neutral-800 outline-none "
+                    className="w-full p-2 rounded-xl bg-white dark:bg-neutral-800 outline-none"
                     required
                   />
                   <input
@@ -231,7 +195,7 @@ export default function SignUpPage() {
                     placeholder="Password"
                     value={userForm.password}
                     onChange={handleUserChange}
-                    className="w-full p-2  rounded-xl bg-white dark:bg-neutral-800 outline-none "
+                    className="w-full p-2 rounded-xl bg-white dark:bg-neutral-800 outline-none"
                     required
                   />
                   <input
@@ -240,7 +204,7 @@ export default function SignUpPage() {
                     placeholder="First Name"
                     value={userForm.firstName}
                     onChange={handleUserChange}
-                    className="w-full p-2  rounded-xl bg-white dark:bg-neutral-800 outline-none "
+                    className="w-full p-2 rounded-xl bg-white dark:bg-neutral-800 outline-none"
                   />
                   <input
                     type="text"
@@ -248,7 +212,7 @@ export default function SignUpPage() {
                     placeholder="Last Name"
                     value={userForm.lastName}
                     onChange={handleUserChange}
-                    className="w-full p-2  rounded-xl bg-white dark:bg-neutral-800 outline-none "
+                    className="w-full p-2 rounded-xl bg-white dark:bg-neutral-800 outline-none"
                   />
                   <input
                     type="text"
@@ -256,12 +220,11 @@ export default function SignUpPage() {
                     placeholder="Phone Number"
                     value={userForm.phoneNumber}
                     onChange={handleUserChange}
-                    className="w-full p-2  rounded-xl bg-white dark:bg-neutral-800 outline-none "
+                    className="w-full p-2 rounded-xl bg-white dark:bg-neutral-800 outline-none"
                   />
                 </div>
               </motion.div>
             )}
-
             {step === 2 && (
               <motion.div
                 key="step2"
@@ -279,7 +242,7 @@ export default function SignUpPage() {
                     value={companyForm.name}
                     onChange={handleCompanyChange}
                     onBlur={checkCompanyAvailability}
-                    className="w-full p-2 border rounded-xl border-none outline-none  bg-white dark:bg-neutral-800"
+                    className="w-full p-2 rounded-xl bg-white dark:bg-neutral-800 outline-none"
                     required
                   />
                   {companyError && (
@@ -288,7 +251,6 @@ export default function SignUpPage() {
                 </div>
               </motion.div>
             )}
-
             {step === 3 && (
               <motion.div
                 key="step3"
@@ -299,7 +261,7 @@ export default function SignUpPage() {
               >
                 <h2 className="text-2xl font-semibold mb-4">Selected Plan</h2>
                 {selectedPlan ? (
-                  <div className="border-none outline-none p-5 rounded-xl bg-white dark:bg-neutral-800">
+                  <div className="p-5 rounded-xl bg-white dark:bg-neutral-800">
                     <div className="flex justify-between items-center mb-2">
                       <span className="font-bold">
                         {selectedPlan.name} Plan
@@ -312,9 +274,9 @@ export default function SignUpPage() {
                         {selectedPlan.description}
                       </p>
                     </div>
-                    <div className="flex items-center justify-between  mt-10 dark:bg-neutral-900 p-4 rounded-xl bg-orange-50">
+                    <div className="flex items-center justify-between mt-10 dark:bg-neutral-900 p-4 rounded-xl bg-orange-50">
                       <span
-                        className={`  p-2.5 rounded-xl text-base underline tracking-widest font-bold ${
+                        className={`p-2.5 rounded-xl text-base underline tracking-widest font-bold ${
                           paymentStatus === "paid"
                             ? "text-teal-500"
                             : "text-red-500"
@@ -326,7 +288,7 @@ export default function SignUpPage() {
                         <button
                           type="button"
                           onClick={handlePayment}
-                          className=" bg-gradient-to-r from-orange-500 to-orange-600 text-white p-2.5 rounded-xl text-sm font-semibold"
+                          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-2.5 rounded-xl text-sm font-semibold"
                         >
                           Proceed to Payment
                         </button>
@@ -339,15 +301,13 @@ export default function SignUpPage() {
               </motion.div>
             )}
           </AnimatePresence>
-
           {error && <p className="text-red-500 text-center">{error}</p>}
-
           <div className="flex justify-between">
             {step > 1 && (
               <button
                 type="button"
                 onClick={handleBack}
-                className="border-none outline-none bg-neutral-200 dark:bg-neutral-800 px-4 py-2 rounded-xl font-semibold text-sm"
+                className="bg-neutral-200 dark:bg-neutral-800 px-4 py-2 rounded-xl font-semibold text-sm"
               >
                 Back
               </button>
@@ -360,7 +320,7 @@ export default function SignUpPage() {
                   (step === 1 && !validateStep1()) ||
                   (step === 2 && !validateStep2())
                 }
-                className="ml-auto bg-gradient-to-r from-orange-500 font-semibold text-sm to-orange-600 text-white px-4 py-2 rounded-xl outline-none border-none disabled:opacity-50"
+                className="ml-auto bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-xl font-semibold text-sm disabled:opacity-50"
               >
                 Next
               </button>
@@ -369,7 +329,7 @@ export default function SignUpPage() {
               <button
                 type="submit"
                 disabled={loading || paymentStatus !== "paid"}
-                className="ml-auto bg-gradient-to-r from-orange-500 font-semibold text-sm to-orange-600 text-white px-4 py-2 rounded-xl outline-none border-none disabled:opacity-50"
+                className="ml-auto bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-xl font-semibold text-sm disabled:opacity-50"
               >
                 {loading ? "Submitting..." : "Submit"}
               </button>
